@@ -153,10 +153,10 @@ public class UserServiceImpl extends AbstractCrudService<User, Integer> implemen
     @Override
     @CacheLock
     public User create(User user) {
-        // Check user
-        if (count() != 0) {
-            throw new BadRequestException("当前博客已有用户");
-        }
+        // // Check user
+        // if (count() != 0) {
+        //     throw new BadRequestException("当前博客已有用户");
+        // }
 
         User createdUser = super.create(user);
 

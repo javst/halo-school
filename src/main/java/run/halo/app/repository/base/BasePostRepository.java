@@ -216,6 +216,13 @@ public interface BasePostRepository<POST extends BasePost> extends BaseRepositor
     int updateLikes(@Param("likes") long likes, @Param("postId") @NonNull Integer postId);
 
     /**
+     *
+     */
+    @Modifying
+    @Query("update BasePost p set p.price =  :price where p.id = :postId")
+    int updatePrice(@Param("price") long price, @Param("postId") @NonNull Integer postId);
+
+    /**
      * Updates post original content.
      *
      * @param content content could be blank but disallow to be null

@@ -13,6 +13,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 import run.halo.app.model.dto.CategoryDTO;
+import run.halo.app.model.entity.Post;
 import run.halo.app.model.vo.PostDetailVO;
 
 @SpringBootTest
@@ -56,6 +57,12 @@ class PostServiceImplTest {
     void getContent() {
         String exportMarkdown = postService.exportMarkdown(1);
         log.debug(exportMarkdown);
+    }
+    @Test
+    void getPost(){
+        Post byId = postService.getById(1);
+        log.info(byId.toString());
+        System.out.println(byId);
     }
 
     @Test

@@ -62,6 +62,10 @@ public class PostParam implements InputConverter<Post> {
 
     private String metaDescription;
 
+    private Float price;
+
+    private Integer stock;
+
     private Set<Integer> tagIds;
 
     private Set<Integer> categoryIds;

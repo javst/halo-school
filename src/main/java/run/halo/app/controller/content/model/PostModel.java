@@ -153,9 +153,15 @@ public class PostModel {
 
         model.addAttribute("is_post", true);
         model.addAttribute("post", postService.convertToDetailVo(post));
+        Double price = post.getPrice();
+        model.addAttribute("price",price.doubleValue());
+        Integer postStock = post.getStock();
+        System.out.println(price);
+        model.addAttribute("stock",postStock.intValue());
         model.addAttribute("categories", categoryService.convertTo(categories));
         model.addAttribute("tags", tagService.convertTo(tags));
         model.addAttribute("metas", postMetaService.convertToMap(metas));
+
 
         if (themeService.templateExists(
             ThemeService.CUSTOM_POST_PREFIX + post.getTemplate() + SUFFIX_FTL)) {

@@ -90,12 +90,51 @@ public class User extends BaseEntity {
     @Column(name = "mfa_key", length = 64)
     private String mfaKey;
 
+    /**
+     * money
+     */
+    @Column(name = "money")
+    @ColumnDefault("200")
+    private Double money;
+
+    /**
+     * student_num
+     */
+    @Column(name = "sutdent_num", length = 25)
+    @ColumnDefault("000000")
+    private String student_num;
+
+
+    @Column(name = "department")
+    @ColumnDefault("计算机信息与工程学院")
+    private String department ;
+
+    @Column(name = "class_name")
+    @ColumnDefault("电子信息")
+    private String class_name ;
+
+    @Column(name = "rule", length = 2)
+    @ColumnDefault("0")
+    private Integer rule;
+
+
     @Override
     public void prePersist() {
         super.prePersist();
 
         if (email == null) {
             email = "";
+        }
+        if (rule == null) {
+            rule = 0;
+        }
+
+        if (money == null){
+            money = 0.0;
+        }
+
+        if (student_num == null){
+            student_num = "000000";
         }
 
         if (avatar == null) {

@@ -387,6 +387,7 @@ public class PostServiceImpl extends BasePostServiceImpl<Post> implements PostSe
                         continue;
                     }
                     switch (key) {
+
                         case "title":
                             post.setTitle(ele);
                             break;

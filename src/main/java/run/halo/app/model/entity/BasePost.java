@@ -13,6 +13,7 @@ import javax.persistence.Lob;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import io.swagger.models.auth.In;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
@@ -164,12 +165,24 @@ public class BasePost extends BaseEntity {
     @Column(name = "meta_description", length = 1023)
     private String metaDescription;
 
+
+
     /**
      * Content word count
      */
     @Column(name = "word_count")
     @ColumnDefault("0")
     private Long wordCount;
+
+    /**
+     * Price
+     * */
+    @Column(name = "price")
+    private Double price;
+
+    @Column(name = "stock")
+    private Integer stock;
+
 
     @Override
     public void prePersist() {
@@ -194,6 +207,7 @@ public class BasePost extends BaseEntity {
         if (disallowComment == null) {
             disallowComment = false;
         }
+
 
         if (password == null) {
             password = "";
@@ -229,6 +243,14 @@ public class BasePost extends BaseEntity {
 
         if (wordCount == null || wordCount < 0) {
             wordCount = 0L;
+        }
+
+        if (price == null){
+            price = 0.0;
+        }
+
+        if (stock == null){
+            stock = 0;
         }
     }
 

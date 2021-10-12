@@ -122,7 +122,6 @@ public abstract class AbstractCrudService<DOMAIN, ID> implements CrudService<DOM
     @Override
     public Optional<DOMAIN> fetchById(ID id) {
         Assert.notNull(id, domainName + " id must not be null");
-
         return repository.findById(id);
     }
 
