@@ -52,6 +52,7 @@ public class BasePost extends BaseEntity {
     @Column(name = "title", nullable = false)
     private String title;
 
+
     /**
      * Post status.
      */

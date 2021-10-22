@@ -1,5 +1,6 @@
 package run.halo.app.model.entity;
 
+import lombok.Data;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 

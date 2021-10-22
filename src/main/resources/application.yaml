@@ -3,6 +3,7 @@ server:
   forward-headers-strategy: native
   error:
     include-message: always
+  address: 0.0.0.0
 spring:
   devtools:
     restart:
@@ -25,14 +26,16 @@ spring:
 #    password: 123456
 #      MySQL database configuration.
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://127.0.0.1:3306/halodb?characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
+    url: jdbc:mysql://192.168.1.103:3306/halodb?characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
     username: root
     password: 654487508
-
   jpa:
     hibernate:
       ddl-auto: update
     open-in-view: false
+    show-sql: true
+    format-sql: true
+    use-sql-comments: true
   flyway:
     enabled: false
   servlet:
@@ -57,6 +60,7 @@ management:
 logging:
   level:
     run.halo.app: INFO
+    org.hibernate.type.descriptor.sql.BasicBinder: trace
     org.eclipse.jetty.server.HttpChannel: ERROR
   file:
     path: ${halo.work-dir}/logs
@@ -68,4 +72,4 @@ springfox:
 halo:
   download-timeout: 5m
   cache: memory
-  work-dir: ${user.home}/.halo/
+  work-dir: ${user.home}/halo/

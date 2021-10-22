@@ -1,2 +1,4 @@
-package run.halo.app.service;public interface OrderService {
+package run.halo.app.service;
+
+public interface OrderService {
 }
