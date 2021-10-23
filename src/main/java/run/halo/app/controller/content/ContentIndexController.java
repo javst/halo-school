@@ -190,7 +190,6 @@ public class ContentIndexController {
         LoginParam loginParam = new LoginParam();
         loginParam.setUsername(username.toString());
         loginParam.setPassword(password.toString());
-
         HttpSession session = httpServletRequest.getSession();
         User authenticate = null;
         try {

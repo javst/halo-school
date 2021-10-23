@@ -104,6 +104,7 @@ public class PostController {
     @ApiOperation("Gets a post")
     public PostDetailVO getBy(@PathVariable("postId") Integer postId) {
         Post post = postService.getById(postId);
+        System.out.println(postService.convertToDetailVo(post, true));
         return postService.convertToDetailVo(post, true);
     }
 

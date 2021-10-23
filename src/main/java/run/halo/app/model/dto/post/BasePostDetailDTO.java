@@ -19,4 +19,8 @@ public class BasePostDetailDTO extends BasePostSimpleDTO {
     private String formatContent;
 
     private Long commentCount;
+
+    private Integer stock;
+
+    private Double price;
 }
