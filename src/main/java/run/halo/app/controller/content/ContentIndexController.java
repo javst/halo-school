@@ -181,12 +181,15 @@ public class ContentIndexController {
         return "注册成功";
     }
     @PostMapping(value = "/login")
-    public RedirectView login( Model model, @RequestParam(name = "user") List<String> user,String token,Integer p){
+    @ResponseBody()
+    public String login( Model model, @RequestParam(name = "username") Object username,
+        @RequestParam(name = "password") Object password
+        ,String token,Integer p){
 
-        System.out.println(user);
+        System.out.println(username);
         LoginParam loginParam = new LoginParam();
-        loginParam.setUsername(user.get(0));
-        loginParam.setPassword(user.get(1));
+        loginParam.setUsername(username.toString());
+        loginParam.setPassword(password.toString());
 
         HttpSession session = httpServletRequest.getSession();
         User authenticate = null;
@@ -195,6 +198,7 @@ public class ContentIndexController {
             AuthToken authToken = adminService.authCodeCheck(loginParam);
             token = authToken.getAccessToken();
         }catch (Exception e){
+            return e.getMessage().toString();
 
         }
         System.out.println(authenticate);
@@ -202,8 +206,9 @@ public class ContentIndexController {
             session.setAttribute("is_login",true);
             session.setAttribute("user",authenticate);
             session.setAttribute("token",token);
+            return ("登录成功");
         }
-        return new RedirectView("./") ;
+        return ("登录失败");
 
     }
 
