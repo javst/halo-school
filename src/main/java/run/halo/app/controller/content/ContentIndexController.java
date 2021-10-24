@@ -262,6 +262,8 @@ public class ContentIndexController {
                     postService.update(post);
                     Order order = new Order();
                     order.setMoney(post.getPrice());
+                    order.setDevice_id(post.getId());
+                    order.setDevice(post.getTitle());
                     order.setState(0);
                     order.setUsername(user.getNickname());
                     order.setClass_name(user.getClass_name());

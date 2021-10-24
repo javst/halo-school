@@ -44,6 +44,11 @@ public class Order extends BaseEntity{
     private Double money;
     @Column(name = "state",nullable = false)
     private Integer state;
+    @Column(name = "device",nullable = false)
+    private String device;
+    @Column(name = "device_id",nullable = false)
+    private Integer device_id;
+
 
 
 
