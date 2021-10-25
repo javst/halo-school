@@ -27,7 +27,7 @@ public class OrderController {
 
     @GetMapping("latest")
     @ApiOperation("Pages latest post")
-    public List<Order> getLatest(@RequestParam(name = "top",defaultValue = "10") int top ){
+    public List<Order> getLatest(@RequestParam(name = "top",defaultValue = "100") int top ){
 
 
         final List<Order> latest = orderService.findLatest(top);
@@ -38,10 +38,15 @@ public class OrderController {
     @PostMapping("passOrder")
     @ApiOperation("pass order")
     public String passOrder(@RequestParam("id") Integer id,@RequestParam("state") Integer state){
-        final int i = orderService.passOrder(id, state);
-        if(i>0){
-            return "操作成功";
-        }
-        return "操作失败";
+         Integer i = orderService.passOrder(id, state);
+        return i.toString();
+    }
+
+    @PostMapping("deleteOrder")
+    @ApiOperation("delete order")
+    public String deleteOrder(@RequestParam("id") Integer id){
+        final Integer i = orderService.deleteOrder(id);
+
+        return i.toString();
     }
 }

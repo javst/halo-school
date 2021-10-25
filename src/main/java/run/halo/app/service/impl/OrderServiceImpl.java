@@ -1,6 +1,8 @@
 package run.halo.app.service.impl;
 
 import org.apache.commons.logging.Log;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Service;
 import run.halo.app.model.entity.Order;
 import run.halo.app.repository.OrderRepository;
@@ -27,8 +29,19 @@ public class OrderServiceImpl extends AbstractCrudService<Order,Integer> impleme
         return latest;
     }
 
+
+
     public int passOrder(Integer id,Integer state){
         final Object i = orderRepository.passOrder(id, state);
+        if((Integer)i>0){
+            return 1;
+        }
+        return 0;
+
+    }
+
+    public int deleteOrder(Integer id){
+        final Object i = orderRepository.deleteOrder(id);
         if((Integer)i>0){
             return 1;
         }
