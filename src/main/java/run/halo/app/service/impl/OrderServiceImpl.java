@@ -23,10 +23,15 @@ public class OrderServiceImpl extends AbstractCrudService<Order,Integer> impleme
     }
 
 
-    public List<Order> findLatest(int top){
-        final List<Order> latest = orderRepository.findLatest(top);
+    public List<Order> findLatest(int start , int top){
+        final List<Order> latest = orderRepository.findLatest(start , top);
         System.out.println(latest);
         return latest;
+    }
+
+    public List<Order> findByState( int state){
+        final List<Order> byState = orderRepository.findByState(state);
+        return byState;
     }
 
 
@@ -48,6 +53,39 @@ public class OrderServiceImpl extends AbstractCrudService<Order,Integer> impleme
         return 0;
 
     }
+
+    public int countOrders(){
+        final Integer count = orderRepository.countOrder();
+        return count;
+    }
+
+
+
+    public List<Order> findByCreateTime(String  createTime){
+        return orderRepository.findByCreateTime(createTime);
+    }
+
+    public List<Order> findByUsername(String username){
+        return orderRepository.findByUsername(username);
+    }
+
+    public List<Order> findByUsernameAndCreateTime( String username,String createTime){
+        return orderRepository.findByCreateTimeAndUsername(createTime,username);
+    }
+
+    public List<Order> findByStateAndUsername( int state,String username){
+        return orderRepository.findByStateAndUsername(username,state);
+    }
+
+    public List<Order> findByStateAndCreateTime( int state,String createTime){
+        return orderRepository.findByStateAndCreateTime(createTime,state);
+    }
+
+    public List<Order> findByCreateTimeAndUsernameAndState( String username,String createTime,int state){
+        return orderRepository.findByCreateTimeAndUsernameAndState(createTime,username,state);
+    }
+
+
 
 
 }

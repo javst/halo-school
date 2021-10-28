@@ -153,7 +153,7 @@ public class PostModel {
 
         model.addAttribute("is_post", true);
         model.addAttribute("post", postService.convertToDetailVo(post));
-        Double price = post.getPrice();
+        Float price = post.getPrice();
         model.addAttribute("price",price.doubleValue());
         Integer postStock = post.getStock();
         System.out.println(price);

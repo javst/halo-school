@@ -22,5 +22,5 @@ public class BasePostDetailDTO extends BasePostSimpleDTO {
 
     private Integer stock;
 
-    private Double price;
+    private Float price;
 }

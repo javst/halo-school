@@ -99,7 +99,9 @@ public class PostParam implements InputConverter<Post> {
             editorType = PostEditorType.MARKDOWN;
         }
 
+
         InputConverter.super.update(post);
+
     }
 
     public Set<PostMeta> getPostMetas() {

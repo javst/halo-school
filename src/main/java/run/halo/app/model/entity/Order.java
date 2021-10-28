@@ -41,13 +41,15 @@ public class Order extends BaseEntity{
     @ColumnDefault("电子信息")
     private String class_name ;
     @Column(name = "money",nullable = false)
-    private Double money;
+    private Float money;
     @Column(name = "state",nullable = false)
     private Integer state;
     @Column(name = "device",nullable = false)
     private String device;
     @Column(name = "device_id",nullable = false)
     private Integer device_id;
+    @Column(name = "student_num")
+    private String student_num;
 
 
 

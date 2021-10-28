@@ -178,8 +178,8 @@ public class BasePost extends BaseEntity {
     /**
      * Price
      * */
-    @Column(name = "price")
-    private Double price;
+    @Column(name = "price",precision = 16,scale = 2)
+    private Float price;
 
     @Column(name = "stock")
     private Integer stock;
@@ -246,9 +246,7 @@ public class BasePost extends BaseEntity {
             wordCount = 0L;
         }
 
-        if (price == null){
-            price = 0.0;
-        }
+
 
         if (stock == null){
             stock = 0;

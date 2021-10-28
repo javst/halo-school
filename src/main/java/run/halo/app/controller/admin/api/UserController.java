@@ -1,18 +1,24 @@
 package run.halo.app.controller.admin.api;
 
+import com.qiniu.util.Json;
+import com.qiniu.util.StringMap;
 import io.swagger.annotations.ApiOperation;
 import javax.validation.Valid;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.util.Base64Utils;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import run.halo.app.annotation.DisableOnCondition;
 import run.halo.app.cache.lock.CacheLock;
 import run.halo.app.exception.BadRequestException;
 import run.halo.app.model.dto.UserDTO;
+import run.halo.app.model.entity.Order;
 import run.halo.app.model.entity.User;
 import run.halo.app.model.enums.MFAType;
 import run.halo.app.model.params.MultiFactorAuthParam;
@@ -22,9 +28,12 @@ import run.halo.app.model.support.BaseResponse;
 import run.halo.app.model.support.UpdateCheck;
 import run.halo.app.model.vo.MultiFactorAuthVO;
 import run.halo.app.service.UserService;
+import run.halo.app.service.impl.UserServiceImpl;
 import run.halo.app.utils.HaloUtils;
 import run.halo.app.utils.TwoFactorAuthUtils;
 import run.halo.app.utils.ValidationUtils;
+import java.util.List;
+import java.util.Map;
 
 /**
  * User controller.
@@ -37,9 +46,78 @@ import run.halo.app.utils.ValidationUtils;
 public class UserController {
 
     private final UserService userService;
+    private final UserServiceImpl userServiceImpl;
 
-    public UserController(UserService userService) {
+    public UserController(UserService userService,UserServiceImpl userServiceImpl) {
         this.userService = userService;
+        this.userServiceImpl = userServiceImpl;
+    }
+
+
+    @GetMapping("latest")
+    @ApiOperation("Pages latest post")
+    public List<User> getLatest(@RequestParam(name = "start",defaultValue = "0") int start , @RequestParam(name = "top",defaultValue = "20") int top ){
+
+
+        final List<User> latest = userServiceImpl.findLatest(start , top);
+
+        return latest;
+    }
+
+    @PostMapping("countUser")
+    @ApiOperation("count order")
+    public int countUser(){
+        final int i = userServiceImpl.countUser();
+        return i;
+    }
+
+    @PostMapping("deleteUser")
+    @ApiOperation("delete user")
+    public String deleteUser(@RequestParam("id") Integer id){
+        final User byId = userServiceImpl.getById(id);
+        try{
+            userServiceImpl.remove(byId);
+        }catch (Exception e)
+        {
+            return e.getMessage().toString();
+        }
+        return "1";
+    }
+
+    @PostMapping("updateUser")
+    @ApiOperation("update user")
+    public Integer updateUser(@RequestParam("user") String userString,@RequestParam("userId") Integer userId){
+        try {
+            final StringMap user = Json.decode(userString);
+            final User userT = userServiceImpl.getById(userId);
+            userT.setDepartment(user.get("department").toString());
+            userT.setMoney(Double.parseDouble(user.get("money").toString()));
+            userT.setNickname(user.get("username").toString());
+            userT.setClass_name(user.get("class_name").toString());
+            userT.setStudent_num(user.get("student_num").toString());
+            userServiceImpl.update(userT);
+            return 1;
+        }catch (Exception e){
+            return 0;
+        }
+
+
+    }
+    @PostMapping("queryUser")
+    @ApiOperation("query user")
+    public List<User> queryOrder(@RequestParam(value = "username",defaultValue = "") String nickname,
+        @RequestParam(value = "student_num",defaultValue = "") String student_num){
+        if (nickname.length()>0&&student_num.length()>0){
+            return userServiceImpl.getByNicknameAndNickname(nickname,student_num);
+
+        }else if (nickname.length()>0){
+            return userServiceImpl.getByNickname(nickname);
+        }else if (student_num.length()>0){
+            return userServiceImpl.getByStudent_num(student_num);
+        }
+
+
+        return null;
     }
 
     @GetMapping("profiles")

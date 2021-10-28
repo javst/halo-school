@@ -6,6 +6,7 @@ import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.data.repository.query.Param;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
@@ -17,6 +18,7 @@ import run.halo.app.exception.BadRequestException;
 import run.halo.app.exception.ForbiddenException;
 import run.halo.app.exception.NotFoundException;
 import run.halo.app.exception.ServiceException;
+import run.halo.app.model.entity.Order;
 import run.halo.app.model.entity.User;
 import run.halo.app.model.enums.LogType;
 import run.halo.app.model.enums.MFAType;
@@ -47,6 +49,30 @@ public class UserServiceImpl extends AbstractCrudService<User, Integer> implemen
         super(userRepository);
         this.userRepository = userRepository;
         this.eventPublisher = eventPublisher;
+    }
+
+    public int countUser(){
+        final Integer count = userRepository.countUser();
+        return count;
+    }
+
+    public List<User> getByNickname( String nickname){
+        final List<User> byNickname = userRepository.getByNickname(nickname);
+        return byNickname;
+    }
+
+    public List<User> getByStudent_num(String student_num){
+        return userRepository.getByStudent_num(student_num);
+    }
+
+    public List<User> getByNicknameAndNickname(String nickname , String student_num){
+        return userRepository.getByNicknameAndNickname(nickname,student_num);
+    }
+
+    public List<User> findLatest(int start , int top){
+        final List<User> latest = userRepository.findLatest(start , top);
+        System.out.println(latest);
+        return latest;
     }
 
     @Override

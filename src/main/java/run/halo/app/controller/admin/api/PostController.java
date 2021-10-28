@@ -105,6 +105,7 @@ public class PostController {
     public PostDetailVO getBy(@PathVariable("postId") Integer postId) {
         Post post = postService.getById(postId);
         System.out.println(postService.convertToDetailVo(post, true));
+
         return postService.convertToDetailVo(post, true);
     }
 
@@ -133,8 +134,12 @@ public class PostController {
     ) {
         // Get the post info
         Post postToUpdate = postService.getById(postId);
+        System.out.println(postParam);
+
+        System.out.println(postToUpdate);
 
         postParam.update(postToUpdate);
+
         return postService.updateBy(postToUpdate, postParam.getTagIds(), postParam.getCategoryIds(),
             postParam.getPostMetas(), autoSave);
     }

@@ -13,8 +13,8 @@ import java.util.List;
 public interface OrderRepository extends BaseRepository<Order,Integer> {
 
 //find lastest
-    @Query(value = "select * from orders limit :top",nativeQuery = true)
-    public List<Order> findLatest(@Param("top") Integer top);
+    @Query(value = "select * from orders limit :start , :top",nativeQuery = true)
+    public List<Order> findLatest(@Param("start") Integer start , @Param("top") Integer top);
 
 
     //passOrder
@@ -30,6 +30,29 @@ public interface OrderRepository extends BaseRepository<Order,Integer> {
     public Integer deleteOrder(@Param("id") Integer id);
 
 
+    @Query(value = "select count(*) from orders" , nativeQuery = true)
+    public Integer countOrder();
+
+    @Query(value = "select  * from orders where state = :state" , nativeQuery = true)
+    public List<Order> findByState(@Param("state") int state);
+
+    @Query(value = "select  * from orders where username = :username" , nativeQuery = true)
+    public List<Order> findByUsername(@Param("username") String username);
+
+    @Query(value = "select  * from orders where create_time >= :createTime" , nativeQuery = true)
+    public List<Order> findByCreateTime(@Param("createTime") String createTime);
+
+    @Query(value = "select  * from orders where state = :state and username = :username" , nativeQuery = true)
+    public List<Order> findByStateAndUsername(@Param("username") String username ,@Param("state") int state);
+
+    @Query(value = "select  * from orders where state = :state and create_time >= :createTime" , nativeQuery = true)
+    public List<Order> findByStateAndCreateTime(@Param("createTime") String createTime ,@Param("state") int state);
+
+    @Query(value = "select  * from orders where username = :username and create_time >= :createTime" , nativeQuery = true)
+    public List<Order> findByCreateTimeAndUsername(@Param("createTime") String createTime ,@Param("username") String username);
+
+    @Query(value = "select  * from orders where username = :username and create_time >= :createTime and state = :state" , nativeQuery = true)
+    public List<Order> findByCreateTimeAndUsernameAndState(@Param("createTime") String createTime ,@Param("username") String username , @Param("state") int state);
 
 
 

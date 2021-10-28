@@ -151,7 +151,7 @@ public class ContentIndexController {
         if(department.toString().length()<=5){
             return "请正确输入院系";
         }
-        if(nickname.toString().length()<=2){
+        if(nickname.toString().length()<2){
             return "请输入真实姓名";
         }
         val user = new User();
@@ -164,21 +164,17 @@ public class ContentIndexController {
         user.setClass_name(class_name.toString());
         user.setStudent_num(student_num.toString());
         user.setMfaType(MFAType.NONE);
-
-
-        try {
-            Optional<User> byUsername = userService.getByUsername(username.toString());
-            if (user == null){
+        final Optional<User> byUsername = userService.getByUsername(username.toString());
+        System.out.println(byUsername);
+        if (byUsername.isEmpty()){
+            try{
                 userService.create(user);
-            }else {
-                return "用户已经存在";
+                return "注册成功";
+            }catch (Exception e){
+                return e.getMessage().toString();
             }
-
-        }catch (Exception e){
-            return e.getMessage().toString();
-        }
-
-        return "注册成功";
+        }else
+            return "用户已存在";
     }
     @PostMapping(value = "/login")
     @ResponseBody()
@@ -265,6 +261,7 @@ public class ContentIndexController {
                     order.setDevice_id(post.getId());
                     order.setDevice(post.getTitle());
                     order.setState(0);
+                    order.setStudent_num(user.getStudent_num());
                     order.setUsername(user.getNickname());
                     order.setClass_name(user.getClass_name());
                     order.setDepartment(user.getDepartment());

@@ -220,7 +220,7 @@ public interface BasePostRepository<POST extends BasePost> extends BaseRepositor
      */
     @Modifying
     @Query("update BasePost p set p.price =  :price where p.id = :postId")
-    int updatePrice(@Param("price") long price, @Param("postId") @NonNull Integer postId);
+    int updatePrice(@Param("price") Double price, @Param("postId") @NonNull Integer postId);
 
     /**
      * Updates post original content.
