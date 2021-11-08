@@ -42,4 +42,18 @@ public class BasePostMinimalDTO implements OutputConverter<BasePostMinimalDTO, B
     private String metaDescription;
 
     private String fullPath;
+
+    private Float price;
+
+    private Integer stock;
+
+    private String norms;
+
+    private String deviceType;
+
+    private String categoryCreate;
+
+    private String deviceNum;
+
+    private String importPeople;
 }

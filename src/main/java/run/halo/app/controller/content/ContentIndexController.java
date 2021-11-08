@@ -58,7 +58,7 @@ public class ContentIndexController {
 
 
     private final AdminServiceImpl adminService;
-    private final HttpServletRequest httpServletRequest ;
+    private final HttpServletRequest httpServletRequest;
 
     private final OrderServiceImpl orderService;
 
@@ -69,7 +69,7 @@ public class ContentIndexController {
         HttpServletRequest httpServletRequest,
         AdminServiceImpl adminService,
         OrderServiceImpl orderService
-       ) {
+    ) {
         this.postService = postService;
         this.optionService = optionService;
         this.postModel = postModel;
@@ -99,20 +99,20 @@ public class ContentIndexController {
         HttpSession session = httpServletRequest.getSession();
         try {
             tokenSession = session.getAttribute("token").toString();
-        }catch (Exception e) {
+        } catch (Exception e) {
             System.out.println(e);
 
         }
-        if (token==null){
-            if (tokenSession == null){
-                session.setAttribute("is_login",false);
-            }else {
+        if (token == null) {
+            if (tokenSession == null) {
+                session.setAttribute("is_login", false);
+            } else {
                 token = tokenSession;
-                session.setAttribute("is_login",true);
+                session.setAttribute("is_login", true);
             }
 
-        }else {
-            model.addAttribute("is_login",true);
+        } else {
+            model.addAttribute("is_login", true);
         }
         if (PostPermalinkType.ID.equals(permalinkType) && !Objects.isNull(p)) {
             Post post = postService.getById(p);
@@ -124,11 +124,12 @@ public class ContentIndexController {
 
     /**
      * "username":$("#register-username").val(),
-     *                                 "nickname":$("#register-nickname").val(),
-     *                                 "password":$("#register-password").val(),
-     *                                 "department":$("#register-department").val(),
-     *                                 "class_name":$("#register-class_name").val(),
-     *                                 "student_num":$("#register-student_num").val(),
+     * "nickname":$("#register-nickname").val(),
+     * "password":$("#register-password").val(),
+     * "department":$("#register-department").val(),
+     * "class_name":$("#register-class_name").val(),
+     * "student_num":$("#register-student_num").val(),
+     *
      * @param
      * @return
      */
@@ -141,17 +142,17 @@ public class ContentIndexController {
         @RequestParam(name = "department") Object department,
         @RequestParam(name = "class_name") Object class_name,
         @RequestParam(name = "student_num") Object student_num
-        ){
-        if(username.toString().length()<=2){
+    ) {
+        if (username.toString().length() <= 2) {
             return "用户名过短";
         }
-        if(password.toString().length()<=8){
+        if (password.toString().length() <= 8) {
             return "密码过短";
         }
-        if(department.toString().length()<=5){
+        if (department.toString().length() <= 5) {
             return "请正确输入院系";
         }
-        if(nickname.toString().length()<2){
+        if (nickname.toString().length() < 2) {
             return "请输入真实姓名";
         }
         val user = new User();
@@ -166,21 +167,23 @@ public class ContentIndexController {
         user.setMfaType(MFAType.NONE);
         final Optional<User> byUsername = userService.getByUsername(username.toString());
         System.out.println(byUsername);
-        if (byUsername.isEmpty()){
-            try{
+        if (byUsername.isEmpty()) {
+            try {
                 userService.create(user);
                 return "注册成功";
-            }catch (Exception e){
+            } catch (Exception e) {
                 return e.getMessage().toString();
             }
-        }else
+        } else {
             return "用户已存在";
+        }
     }
+
     @PostMapping(value = "/login")
     @ResponseBody()
-    public String login( Model model, @RequestParam(name = "username") Object username,
+    public String login(Model model, @RequestParam(name = "username") Object username,
         @RequestParam(name = "password") Object password
-        ,String token,Integer p){
+        , String token, Integer p) {
 
         System.out.println(username);
         LoginParam loginParam = new LoginParam();
@@ -192,15 +195,15 @@ public class ContentIndexController {
             authenticate = adminService.authenticate(loginParam);
             AuthToken authToken = adminService.authCodeCheck(loginParam);
             token = authToken.getAccessToken();
-        }catch (Exception e){
+        } catch (Exception e) {
             return e.getMessage().toString();
 
         }
         System.out.println(authenticate);
-        if (authenticate!=null){
-            session.setAttribute("is_login",true);
-            session.setAttribute("user",authenticate);
-            session.setAttribute("token",token);
+        if (authenticate != null) {
+            session.setAttribute("is_login", true);
+            session.setAttribute("user", authenticate);
+            session.setAttribute("token", token);
             return ("登录成功");
         }
         return ("登录失败");
@@ -220,46 +223,47 @@ public class ContentIndexController {
 
         return postModel.list(page, model);
     }
+
     @GetMapping(value = "/logout")
     @ResponseBody
-    public String logout(Model model){
+    public String logout(Model model) {
         HttpSession session = httpServletRequest.getSession();
-        session.setAttribute("is_login",false);
+        session.setAttribute("is_login", false);
         session.removeAttribute("user");
         session.removeAttribute("token");
         return "注销成功";
     }
+
     @PostMapping(value = "/buyGoods")
     @ResponseBody
-    public String buyGoods(@RequestParam("postId") int postId){
-
+    public String buyGoods(@RequestParam("postId") int postId, @RequestParam("amount") int amount) {
         HttpSession session = httpServletRequest.getSession();
         User user;
         try {
             user = (User) session.getAttribute("user");
-        }catch (Exception e){
+        } catch (Exception e) {
             return e.getMessage().toString();
         }
         Post post;
-        if (user != null){
+        if (user != null) {
             post = postService.getById(postId);
-            if (post!=null){
-                if (user.getMoney()-post.getPrice()>=0)
-                {
-                    user.setMoney(user.getMoney()-post.getPrice());
-                }else {
+            if (post != null && amount > 0) {
+                if (user.getMoney() - post.getPrice() * amount >= 0) {
+                    user.setMoney(user.getMoney() - post.getPrice());
+                } else {
                     return "余额不足";
                 }
 
-                try{
+                try {
                     User updateUser = userService.update(user);
-                    session.setAttribute("user",user);
-                    post.setStock(post.getStock()-1);
+                    session.setAttribute("user", user);
+                    post.setStock(post.getStock() - amount);
                     postService.update(post);
                     Order order = new Order();
-                    order.setMoney(post.getPrice());
+                    order.setMoney(post.getPrice() * amount);
                     order.setDevice_id(post.getId());
                     order.setDevice(post.getTitle());
+                    order.setAmount(amount);
                     order.setState(0);
                     order.setStudent_num(user.getStudent_num());
                     order.setUsername(user.getNickname());
@@ -269,18 +273,14 @@ public class ContentIndexController {
                     orderService.create(order);
                     return "申请设备成功，请等待老师审核";
 
-                }catch (Exception e){
+                } catch (Exception e) {
                     return e.getMessage().toString();
                 }
             }
 
-        }else {
+        } else {
             return "请先登录";
         }
-
-
-
-
 
 
         return "申请失败";

@@ -50,6 +50,8 @@ public class Order extends BaseEntity{
     private Integer device_id;
     @Column(name = "student_num")
     private String student_num;
+    @Column(name = "amount")
+    private Integer amount;
 
 
 

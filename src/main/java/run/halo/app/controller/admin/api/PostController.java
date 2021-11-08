@@ -7,7 +7,9 @@ import java.io.UnsupportedEncodingException;
 import java.net.URISyntaxException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import javax.validation.Valid;
 import org.apache.http.client.utils.URIBuilder;
@@ -27,6 +29,7 @@ import run.halo.app.cache.AbstractStringCacheStore;
 import run.halo.app.model.dto.post.BasePostDetailDTO;
 import run.halo.app.model.dto.post.BasePostMinimalDTO;
 import run.halo.app.model.dto.post.BasePostSimpleDTO;
+import run.halo.app.model.entity.Category;
 import run.halo.app.model.entity.Post;
 import run.halo.app.model.enums.PostPermalinkType;
 import run.halo.app.model.enums.PostStatus;
@@ -34,8 +37,11 @@ import run.halo.app.model.params.PostContentParam;
 import run.halo.app.model.params.PostParam;
 import run.halo.app.model.params.PostQuery;
 import run.halo.app.model.vo.PostDetailVO;
+import run.halo.app.service.CategoryService;
 import run.halo.app.service.OptionService;
 import run.halo.app.service.PostService;
+import run.halo.app.service.impl.CategoryServiceImpl;
+import run.halo.app.service.impl.PostCategoryServiceImpl;
 import run.halo.app.utils.HaloUtils;
 
 /**
@@ -56,12 +62,17 @@ public class PostController {
 
     private final OptionService optionService;
 
+    private final CategoryServiceImpl categoryService;
+
+
     public PostController(PostService postService,
         AbstractStringCacheStore cacheStore,
-        OptionService optionService) {
+        OptionService optionService,
+        CategoryServiceImpl categoryService) {
         this.postService = postService;
         this.cacheStore = cacheStore;
         this.optionService = optionService;
+        this.categoryService = categoryService;
     }
 
     @GetMapping
@@ -211,5 +222,46 @@ public class PostController {
         return new URIBuilder(previewUrl.toString())
             .addParameter("token", token)
             .build().toString();
+    }
+    @PostMapping("inStock")
+    @ApiOperation("import stock")
+    public String inStock(@Valid @RequestBody PostParam postParam ,@RequestParam("categories") String categoriesSlug){
+
+        Category category = new Category();
+        try {
+            category.setSlug(categoriesSlug);
+            category.setName(postParam.getCategoryCreate());
+            category = categoryService.create(category);
+
+        }catch (Exception e){
+            category = categoryService.getBySlug(categoriesSlug);
+        }
+        Set<Integer> Ids = new HashSet<>();
+        Ids.add(category.getId());
+        postParam.setThumbnail("/themes/device.jpeg");
+        postParam.setCategoryIds(Ids);
+        Post post = postParam.convertTo();
+        Post postById = new Post();
+        try{
+            postById = postService.getBySlug(post.getSlug());
+            postById.setStock(post.getStock() + postById.getStock());
+            postById.setPrice(post.getPrice());
+            postById.setDeviceNum(post.getDeviceNum());
+            postById.setNorms(post.getNorms());
+            postById.setDeviceType(post.getDeviceType());
+            postById.setImportPeople(post.getImportPeople());
+            postService.update(postById);
+        }catch (Exception e){
+
+            post.setStatus(PostStatus.PUBLISHED);
+
+            postService.createBy(post, postParam.getTagIds(), postParam.getCategoryIds(),
+                    postParam.getPostMetas(), false);
+
+        }
+
+        return "1";
+
+
     }
 }

@@ -27,13 +27,13 @@ import run.halo.app.utils.SlugUtils;
 @Data
 public class PostParam implements InputConverter<Post> {
 
-    @NotBlank(message = "文章标题不能为空")
+    @NotBlank(message = "元器件标题不能为空")
     @Size(max = 100, message = "文章标题的字符长度不能超过 {max}")
     private String title;
 
     private PostStatus status = PostStatus.DRAFT;
 
-    @Size(max = 255, message = "文章别名的字符长度不能超过 {max}")
+    @Size(max = 255, message = "元器件别名的字符长度不能超过 {max}")
     private String slug;
 
     private PostEditorType editorType;
@@ -65,6 +65,16 @@ public class PostParam implements InputConverter<Post> {
     private Float price;
 
     private Integer stock;
+
+    private String norms;
+
+    private String deviceType;
+
+    private String categoryCreate;
+
+    private String deviceNum;
+
+    private String importPeople;
 
     private Set<Integer> tagIds;
 

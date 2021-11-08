@@ -59,6 +59,9 @@ public class AdminController {
     @CacheLock(autoDelete = false, prefix = "login_precheck")
     public LoginPreCheckDTO authPreCheck(@RequestBody @Valid LoginParam loginParam) {
         final User user = adminService.authenticate(loginParam);
+        if (user.getRule() != 0){
+            return new LoginPreCheckDTO(true);
+        }
         return new LoginPreCheckDTO(MFAType.useMFA(user.getMfaType()));
     }
 

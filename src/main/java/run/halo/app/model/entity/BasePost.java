@@ -184,6 +184,18 @@ public class BasePost extends BaseEntity {
     @Column(name = "stock")
     private Integer stock;
 
+    @Column(name = "device_num")
+    private String deviceNum;
+
+    @Column(name = "norms")
+    private String norms;
+
+    @Column(name = "device_type")
+    private String deviceType;
+
+    @Column(name = "import_people")
+    private String importPeople;
+
 
     @Override
     public void prePersist() {
