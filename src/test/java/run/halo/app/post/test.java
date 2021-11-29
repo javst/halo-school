@@ -48,7 +48,7 @@ public class test {
         Order byId = orderService.getById(1);
 
         byId.setId(null);
-        byId.setMoney(100.0);
+
         byId.setUsername("sss");
         Order order = orderService.create(byId);
         byId = orderService.getById(8);

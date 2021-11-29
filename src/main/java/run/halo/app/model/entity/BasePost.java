@@ -167,7 +167,6 @@ public class BasePost extends BaseEntity {
     private String metaDescription;
 
 
-
     /**
      * Content word count
      */
@@ -177,8 +176,8 @@ public class BasePost extends BaseEntity {
 
     /**
      * Price
-     * */
-    @Column(name = "price",precision = 16,scale = 2)
+     */
+    @Column(name = "price", precision = 16, scale = 2)
     private Float price;
 
     @Column(name = "stock")
@@ -259,8 +258,7 @@ public class BasePost extends BaseEntity {
         }
 
 
-
-        if (stock == null){
+        if (stock == null) {
             stock = 0;
         }
     }

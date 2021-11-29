@@ -1,7 +1,7 @@
 plugins {
     id "org.springframework.boot" version "2.5.1"
     id "io.spring.dependency-management" version "1.0.11.RELEASE"
-    id "checkstyle"
+//    id "checkstyle"
     id "java"
 }
 
@@ -10,11 +10,11 @@ version = "1.4.12"
 description = "Halo, An excellent open source blog publishing application."
 sourceCompatibility = JavaVersion.VERSION_11
 
-checkstyle {
-    toolVersion = "8.39"
-    showViolations = false
-    ignoreFailures = false
-}
+//checkstyle {
+//    toolVersion = "8.39"
+//    showViolations = false
+//    ignoreFailures = false
+//}
 
 repositories {
     mavenLocal()

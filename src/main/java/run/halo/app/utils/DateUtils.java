@@ -111,7 +111,7 @@ public class DateUtils {
      *
      * @param str date string
      * @param locale locale the locale whose date format symbols should be used.
-     *               If null, the system locale is used (as per parseDate(String, String...)).
+     * If null, the system locale is used (as per parseDate(String, String...)).
      * @return the parsed date object
      */
     public static Date parseDate(String str, Locale locale) {

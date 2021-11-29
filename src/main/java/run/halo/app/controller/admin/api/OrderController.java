@@ -19,42 +19,42 @@ import java.util.List;
 @RequestMapping("/api/admin/orders")
 public class OrderController {
 
-    private  final  OrderServiceImpl orderService;
+    private final OrderServiceImpl orderService;
 
-    public OrderController(OrderServiceImpl orderService){
+    public OrderController(OrderServiceImpl orderService) {
         this.orderService = orderService;
 
     }
 
     @GetMapping("latest")
     @ApiOperation("Pages latest post")
-    public List<Order> getLatest(@RequestParam(name = "start",defaultValue = "0") int start , @RequestParam(name = "top",defaultValue = "20") int top ){
+    public List<Order> getLatest(@RequestParam(name = "start", defaultValue = "0") int start,
+        @RequestParam(name = "top", defaultValue = "20") int top) {
 
 
-        final List<Order> latest = orderService.findLatest(start , top);
+        final List<Order> latest = orderService.findLatest(start, top);
 
         return latest;
     }
 
     @PostMapping("passOrder")
     @ApiOperation("pass order")
-    public String passOrder(@RequestParam("id") Integer id,@RequestParam("state") Integer state){
-         Integer i = orderService.passOrder(id, state);
+    public String passOrder(@RequestParam("id") Integer id, @RequestParam("state") Integer state) {
+        Integer i = orderService.passOrder(id, state);
         return i.toString();
     }
 
     @PostMapping("countOrder")
     @ApiOperation("count order")
-    public int countOrder(){
+    public int countOrder() {
         final int i = orderService.countOrders();
         return i;
     }
 
 
-
     @PostMapping("deleteOrder")
     @ApiOperation("delete order")
-    public String deleteOrder(@RequestParam("id") Integer id){
+    public String deleteOrder(@RequestParam("id") Integer id) {
         final Integer i = orderService.deleteOrder(id);
 
         return i.toString();
@@ -63,39 +63,38 @@ public class OrderController {
     @PostMapping("queryOrder")
     @ApiOperation("query order")
     public List<Order> queryOrder(
-        @RequestParam(name = "username",defaultValue = "") String username,
-        @RequestParam(name = "state",defaultValue = "-1") Integer state,
-        @RequestParam(name = "createTime",defaultValue = "") String createTime){
+        @RequestParam(name = "username", defaultValue = "") String username,
+        @RequestParam(name = "state", defaultValue = "-1") Integer state,
+        @RequestParam(name = "createTime", defaultValue = "") String createTime) {
 
 
         System.out.println(state + "\n");
-        System.out.println(createTime+"\n");
-        System.out.println(username+"\n");
+        System.out.println(createTime + "\n");
+        System.out.println(username + "\n");
 
-        if(username.length() == 0 && state == -1 && createTime.length() == 0){
+        if (username.length() == 0 && state == -1 && createTime.length() == 0) {
             return null;
-        }
-        else if(username.length() != 0 && state == -1 && createTime.length() == 0){
+        } else if (username.length() != 0 && state == -1 && createTime.length() == 0) {
             System.out.println(1);
             return orderService.findByUsername(username);
-        }else if(username.length() != 0 && state != -1 && createTime.length() == 0){
+        } else if (username.length() != 0 && state != -1 && createTime.length() == 0) {
             System.out.println(2);
-            return orderService.findByStateAndUsername(state,username);
-        }else if(username.length() != 0 && state == -1 && createTime.length() != 0){
+            return orderService.findByStateAndUsername(state, username);
+        } else if (username.length() != 0 && state == -1 && createTime.length() != 0) {
             System.out.println(3);
-            return orderService.findByUsernameAndCreateTime(username,createTime);
-        }else if(username.length() == 0 && state != -1 && createTime.length() == 0){
+            return orderService.findByUsernameAndCreateTime(username, createTime);
+        } else if (username.length() == 0 && state != -1 && createTime.length() == 0) {
             System.out.println(4);
             return orderService.findByState(state);
-        }else if(username.length() == 0 && state != -1 && createTime.length() != 0){
+        } else if (username.length() == 0 && state != -1 && createTime.length() != 0) {
             System.out.println(5);
-            return orderService.findByStateAndCreateTime(state,createTime);
-        }else if(username.length() == 0 && state == -1 && createTime.length() != 0){
+            return orderService.findByStateAndCreateTime(state, createTime);
+        } else if (username.length() == 0 && state == -1 && createTime.length() != 0) {
             System.out.println(6);
             return orderService.findByCreateTime(createTime);
-        }else{
+        } else {
             System.out.println(7);
-            return orderService.findByCreateTimeAndUsernameAndState(username,createTime,state);
+            return orderService.findByCreateTimeAndUsernameAndState(username, createTime, state);
         }
 
 

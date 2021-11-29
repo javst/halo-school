@@ -48,7 +48,7 @@ public class UserController {
     private final UserService userService;
     private final UserServiceImpl userServiceImpl;
 
-    public UserController(UserService userService,UserServiceImpl userServiceImpl) {
+    public UserController(UserService userService, UserServiceImpl userServiceImpl) {
         this.userService = userService;
         this.userServiceImpl = userServiceImpl;
     }
@@ -56,29 +56,29 @@ public class UserController {
 
     @GetMapping("latest")
     @ApiOperation("Pages latest post")
-    public List<User> getLatest(@RequestParam(name = "start",defaultValue = "0") int start , @RequestParam(name = "top",defaultValue = "20") int top ){
+    public List<User> getLatest(@RequestParam(name = "start", defaultValue = "0") int start,
+        @RequestParam(name = "top", defaultValue = "20") int top) {
 
 
-        final List<User> latest = userServiceImpl.findLatest(start , top);
+        final List<User> latest = userServiceImpl.findLatest(start, top);
 
         return latest;
     }
 
     @PostMapping("countUser")
     @ApiOperation("count order")
-    public int countUser(){
+    public int countUser() {
         final int i = userServiceImpl.countUser();
         return i;
     }
 
     @PostMapping("deleteUser")
     @ApiOperation("delete user")
-    public String deleteUser(@RequestParam("id") Integer id){
+    public String deleteUser(@RequestParam("id") Integer id) {
         final User byId = userServiceImpl.getById(id);
-        try{
+        try {
             userServiceImpl.remove(byId);
-        }catch (Exception e)
-        {
+        } catch (Exception e) {
             return e.getMessage().toString();
         }
         return "1";
@@ -86,7 +86,8 @@ public class UserController {
 
     @PostMapping("updateUser")
     @ApiOperation("update user")
-    public Integer updateUser(@RequestParam("user") String userString,@RequestParam("userId") Integer userId){
+    public Integer updateUser(@RequestParam("user") String userString,
+        @RequestParam("userId") Integer userId) {
         try {
             final StringMap user = Json.decode(userString);
             final User userT = userServiceImpl.getById(userId);
@@ -97,22 +98,24 @@ public class UserController {
             userT.setStudent_num(user.get("student_num").toString());
             userServiceImpl.update(userT);
             return 1;
-        }catch (Exception e){
+        } catch (Exception e) {
             return 0;
         }
 
 
     }
+
     @PostMapping("queryUser")
     @ApiOperation("query user")
-    public List<User> queryOrder(@RequestParam(value = "username",defaultValue = "") String nickname,
-        @RequestParam(value = "student_num",defaultValue = "") String student_num){
-        if (nickname.length()>0&&student_num.length()>0){
-            return userServiceImpl.getByNicknameAndNickname(nickname,student_num);
+    public List<User> queryOrder(
+        @RequestParam(value = "username", defaultValue = "") String nickname,
+        @RequestParam(value = "student_num", defaultValue = "") String student_num) {
+        if (nickname.length() > 0 && student_num.length() > 0) {
+            return userServiceImpl.getByNicknameAndNickname(nickname, student_num);
 
-        }else if (nickname.length()>0){
+        } else if (nickname.length() > 0) {
             return userServiceImpl.getByNickname(nickname);
-        }else if (student_num.length()>0){
+        } else if (student_num.length() > 0) {
             return userServiceImpl.getByStudent_num(student_num);
         }
 

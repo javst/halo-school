@@ -223,9 +223,11 @@ public class PostController {
             .addParameter("token", token)
             .build().toString();
     }
+
     @PostMapping("inStock")
     @ApiOperation("import stock")
-    public String inStock(@Valid @RequestBody PostParam postParam ,@RequestParam("categories") String categoriesSlug){
+    public String inStock(@Valid @RequestBody PostParam postParam,
+        @RequestParam("categories") String categoriesSlug) {
 
         Category category = new Category();
         try {
@@ -233,7 +235,7 @@ public class PostController {
             category.setName(postParam.getCategoryCreate());
             category = categoryService.create(category);
 
-        }catch (Exception e){
+        } catch (Exception e) {
             category = categoryService.getBySlug(categoriesSlug);
         }
         Set<Integer> Ids = new HashSet<>();
@@ -242,7 +244,7 @@ public class PostController {
         postParam.setCategoryIds(Ids);
         Post post = postParam.convertTo();
         Post postById = new Post();
-        try{
+        try {
             postById = postService.getBySlug(post.getSlug());
             postById.setStock(post.getStock() + postById.getStock());
             postById.setPrice(post.getPrice());
@@ -251,12 +253,12 @@ public class PostController {
             postById.setDeviceType(post.getDeviceType());
             postById.setImportPeople(post.getImportPeople());
             postService.update(postById);
-        }catch (Exception e){
+        } catch (Exception e) {
 
             post.setStatus(PostStatus.PUBLISHED);
 
             postService.createBy(post, postParam.getTagIds(), postParam.getCategoryIds(),
-                    postParam.getPostMetas(), false);
+                postParam.getPostMetas(), false);
 
         }
 

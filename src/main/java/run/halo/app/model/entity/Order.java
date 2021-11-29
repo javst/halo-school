@@ -21,40 +21,37 @@ import java.sql.SQLException;
 @Entity
 @Table(name = "orders")
 @Data
-@EqualsAndHashCode(callSuper=true)
-public class Order extends BaseEntity{
+@EqualsAndHashCode(callSuper = true)
+public class Order extends BaseEntity {
 
     @Id
     @GeneratedValue()
     @Column(name = "id")
     private Integer id;
-    @Column(name = "user_id",nullable = false)
+    @Column(name = "user_id", nullable = false)
     private Integer userId;
     @Column(name = "username", nullable = false)
     private String username;
 
     @Column(name = "department")
     @ColumnDefault("计算机信息与工程学院")
-    private String department ;
+    private String department;
 
     @Column(name = "class_name")
     @ColumnDefault("电子信息")
-    private String class_name ;
-    @Column(name = "money",nullable = false)
+    private String class_name;
+    @Column(name = "money", nullable = false)
     private Float money;
-    @Column(name = "state",nullable = false)
+    @Column(name = "state", nullable = false)
     private Integer state;
-    @Column(name = "device",nullable = false)
+    @Column(name = "device", nullable = false)
     private String device;
-    @Column(name = "device_id",nullable = false)
+    @Column(name = "device_id", nullable = false)
     private Integer device_id;
     @Column(name = "student_num")
     private String student_num;
     @Column(name = "amount")
     private Integer amount;
-
-
-
 
 
     @Override
