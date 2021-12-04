@@ -31,6 +31,7 @@ import run.halo.app.model.dto.post.BasePostMinimalDTO;
 import run.halo.app.model.dto.post.BasePostSimpleDTO;
 import run.halo.app.model.entity.Category;
 import run.halo.app.model.entity.Post;
+import run.halo.app.model.entity.Stock;
 import run.halo.app.model.enums.PostPermalinkType;
 import run.halo.app.model.enums.PostStatus;
 import run.halo.app.model.params.PostContentParam;
@@ -42,6 +43,7 @@ import run.halo.app.service.OptionService;
 import run.halo.app.service.PostService;
 import run.halo.app.service.impl.CategoryServiceImpl;
 import run.halo.app.service.impl.PostCategoryServiceImpl;
+import run.halo.app.service.impl.StockServiceImpl;
 import run.halo.app.utils.HaloUtils;
 
 /**
@@ -64,15 +66,19 @@ public class PostController {
 
     private final CategoryServiceImpl categoryService;
 
+    private final StockServiceImpl stockService;
+
 
     public PostController(PostService postService,
         AbstractStringCacheStore cacheStore,
         OptionService optionService,
+        StockServiceImpl stockService,
         CategoryServiceImpl categoryService) {
         this.postService = postService;
         this.cacheStore = cacheStore;
         this.optionService = optionService;
         this.categoryService = categoryService;
+        this.stockService = stockService;
     }
 
     @GetMapping
@@ -230,6 +236,7 @@ public class PostController {
         @RequestParam("categories") String categoriesSlug) {
 
         Category category = new Category();
+        System.out.println(postParam);
         try {
             category.setSlug(categoriesSlug);
             category.setName(postParam.getCategoryCreate());
@@ -237,7 +244,9 @@ public class PostController {
 
         } catch (Exception e) {
             category = categoryService.getBySlug(categoriesSlug);
+            System.out.println(e.getMessage().toString());
         }
+        System.out.println(category);
         Set<Integer> Ids = new HashSet<>();
         Ids.add(category.getId());
         postParam.setThumbnail("/themes/device.jpeg");
@@ -252,14 +261,21 @@ public class PostController {
             postById.setNorms(post.getNorms());
             postById.setDeviceType(post.getDeviceType());
             postById.setImportPeople(post.getImportPeople());
-            postService.update(postById);
+            post = postService.update(postById);
+
+
         } catch (Exception e) {
 
             post.setStatus(PostStatus.PUBLISHED);
-
             postService.createBy(post, postParam.getTagIds(), postParam.getCategoryIds(),
-                postParam.getPostMetas(), false);
+                    postParam.getPostMetas(), false);
+            post = postService.getBySlug(post.getSlug());
 
+        }finally {
+            Stock stock = new Stock();
+            stock.postConvert(post);
+            stock.setCategories(postParam.getCategoryCreate());
+            stockService.create(stock);
         }
 
         return "1";
