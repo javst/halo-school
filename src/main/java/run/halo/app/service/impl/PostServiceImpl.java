@@ -21,6 +21,7 @@ import javax.persistence.criteria.Root;
 import javax.persistence.criteria.Subquery;
 import javax.validation.constraints.NotNull;
 import lombok.extern.slf4j.Slf4j;
+import lombok.val;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
@@ -265,6 +266,13 @@ public class PostServiceImpl extends BasePostServiceImpl<Post> implements PostSe
 
         return postOptional
             .orElseThrow(() -> new NotFoundException("查询不到该文章的信息").setErrorData(slug));
+    }
+
+    @Override
+    public Post getByDeviceNum(String deviceNum){
+        Optional<Post>  postOptional= postRepository.findByDeviceNum(deviceNum);
+        return postOptional
+            .orElseThrow(()->new NotFoundException("查询不到该文章的信息").setErrorData(deviceNum));
     }
 
     @Override

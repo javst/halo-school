@@ -72,6 +72,8 @@ public class PostParam implements InputConverter<Post> {
 
     private String categoryCreate;
 
+    private String categorySlug;
+
     private String deviceNum;
 
     private String importPeople;
@@ -104,6 +106,8 @@ public class PostParam implements InputConverter<Post> {
         if (null == thumbnail) {
             thumbnail = "";
         }
+        if (price ==null)
+            price = (float)0;
 
         if (null == editorType) {
             editorType = PostEditorType.MARKDOWN;

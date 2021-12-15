@@ -103,4 +103,7 @@ public interface PostRepository extends BasePostRepository<Post>, JpaSpecificati
         + ".status = :status")
     Optional<Post> findBy(@Param("year") Integer year, @Param("month") Integer month,
         @Param("day") Integer day, @Param("slug") String slug, @Param("status") PostStatus status);
+
+    @Query("select post from Post post where post.deviceNum = :deviceNum")
+    Optional<Post> findByDeviceNum(@Param("deviceNum") String deviceNum);
 }

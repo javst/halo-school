@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.view.RedirectView;
 import run.halo.app.controller.content.model.PostModel;
+import run.halo.app.model.entity.Compete;
 import run.halo.app.model.entity.Order;
 import run.halo.app.model.entity.Post;
 import run.halo.app.model.entity.User;
@@ -30,6 +31,7 @@ import run.halo.app.service.AdminService;
 import run.halo.app.service.OptionService;
 import run.halo.app.service.PostService;
 import run.halo.app.service.impl.AdminServiceImpl;
+import run.halo.app.service.impl.CompeteServiceImpl;
 import run.halo.app.service.impl.OrderServiceImpl;
 import run.halo.app.service.impl.PostServiceImpl;
 import run.halo.app.service.impl.UserServiceImpl;
@@ -62,13 +64,16 @@ public class ContentIndexController {
 
     private final OrderServiceImpl orderService;
 
+    private final CompeteServiceImpl competeService;
+
     public ContentIndexController(PostService postService,
         OptionService optionService,
         PostModel postModel,
         UserServiceImpl userService,
         HttpServletRequest httpServletRequest,
         AdminServiceImpl adminService,
-        OrderServiceImpl orderService
+        OrderServiceImpl orderService,
+        CompeteServiceImpl competeService
     ) {
         this.postService = postService;
         this.optionService = optionService;
@@ -77,6 +82,7 @@ public class ContentIndexController {
         this.adminService = adminService;
         this.httpServletRequest = httpServletRequest;
         this.orderService = orderService;
+        this.competeService = competeService;
 
     }
 
@@ -90,29 +96,17 @@ public class ContentIndexController {
      */
     @GetMapping()
     public String index(Integer p, String token, Model model) {
-
-
         PostPermalinkType permalinkType = optionService.getPostPermalinkType();
-
-
         String tokenSession = null;
+        User user = new User();
         HttpSession session = httpServletRequest.getSession();
         try {
-            tokenSession = session.getAttribute("token").toString();
-        } catch (Exception e) {
+            user = (User)session.getAttribute("user");
+        }catch (Exception e){
             System.out.println(e);
-
         }
-        if (token == null) {
-            if (tokenSession == null) {
-                session.setAttribute("is_login", false);
-            } else {
-                token = tokenSession;
-                session.setAttribute("is_login", true);
-            }
-
-        } else {
-            model.addAttribute("is_login", true);
+        if(user!=null){
+            session.setAttribute("user",user);
         }
         if (PostPermalinkType.ID.equals(permalinkType) && !Objects.isNull(p)) {
             Post post = postService.getById(p);
@@ -179,13 +173,44 @@ public class ContentIndexController {
         }
     }
 
+
+    @PostMapping(value = "/compete")
+    @ResponseBody
+    public String apply(@RequestParam("title") String title,
+        @RequestParam("norm") String norm, @RequestParam("link") String link,
+        @RequestParam("number") Integer number) {
+        if (title.length() > 0 && norm.length() > 0 && link.length() > 0 && number > 0) {
+            HttpSession session = httpServletRequest.getSession();
+            User user;
+            user = (User) session.getAttribute("user");
+            if (user == null){
+                return "请先登录";
+            }
+            Compete compete = new Compete();
+            compete.setLink(link);
+            compete.setNorm(norm);
+            compete.setNumber(number);
+            compete.setTitle(title);
+            try {
+                compete.setUsername(user.getNickname());
+                competeService.create(compete);
+                return "提交成功";
+            }catch (Exception e)
+            {
+                return e.toString();
+            }
+
+        }else {
+            return "请完整填充字段";
+        }
+
+    }
+
     @PostMapping(value = "/login")
     @ResponseBody()
     public String login(Model model, @RequestParam(name = "username") Object username,
         @RequestParam(name = "password") Object password
         , String token, Integer p) {
-
-        System.out.println(username);
         LoginParam loginParam = new LoginParam();
         loginParam.setUsername(username.toString());
         loginParam.setPassword(password.toString());
@@ -199,11 +224,9 @@ public class ContentIndexController {
             return e.getMessage().toString();
 
         }
-        System.out.println(authenticate);
         if (authenticate != null) {
             session.setAttribute("is_login", true);
             session.setAttribute("user", authenticate);
-            session.setAttribute("token", token);
             return ("登录成功");
         }
         return ("登录失败");
@@ -228,7 +251,7 @@ public class ContentIndexController {
     @ResponseBody
     public String logout(Model model) {
         HttpSession session = httpServletRequest.getSession();
-        session.setAttribute("is_login", false);
+        session.removeAttribute("is_login");
         session.removeAttribute("user");
         session.removeAttribute("token");
         return "注销成功";
@@ -253,7 +276,6 @@ public class ContentIndexController {
                 } else {
                     return "余额不足";
                 }
-
                 try {
                     User updateUser = userService.update(user);
                     session.setAttribute("user", user);
@@ -272,12 +294,10 @@ public class ContentIndexController {
                     order.setUserId(user.getId());
                     orderService.create(order);
                     return "申请设备成功，请等待老师审核";
-
                 } catch (Exception e) {
                     return e.getMessage().toString();
                 }
             }
-
         } else {
             return "请先登录";
         }

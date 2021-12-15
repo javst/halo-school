@@ -320,4 +320,6 @@ public interface PostService extends BasePostService<Post> {
      */
     @NonNull
     List<PostMarkdownVO> listPostMarkdowns();
+
+    Post getByDeviceNum(String deviceNum);
 }

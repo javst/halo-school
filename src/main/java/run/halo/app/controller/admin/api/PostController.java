@@ -7,6 +7,8 @@ import java.io.UnsupportedEncodingException;
 import java.net.URISyntaxException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -234,9 +236,8 @@ public class PostController {
     @ApiOperation("import stock")
     public String inStock(@Valid @RequestBody PostParam postParam,
         @RequestParam("categories") String categoriesSlug) {
-
         Category category = new Category();
-        System.out.println(postParam);
+        System.out.println(categoriesSlug);
         try {
             category.setSlug(categoriesSlug);
             category.setName(postParam.getCategoryCreate());
@@ -244,9 +245,9 @@ public class PostController {
 
         } catch (Exception e) {
             category = categoryService.getBySlug(categoriesSlug);
+            System.out.println(category);
             System.out.println(e.getMessage().toString());
         }
-        System.out.println(category);
         Set<Integer> Ids = new HashSet<>();
         Ids.add(category.getId());
         postParam.setThumbnail("/themes/device.jpeg");
@@ -254,32 +255,77 @@ public class PostController {
         Post post = postParam.convertTo();
         Post postById = new Post();
         try {
-            postById = postService.getBySlug(post.getSlug());
+            postById = postService.getByDeviceNum(post.getDeviceNum());
             postById.setStock(post.getStock() + postById.getStock());
             postById.setPrice(post.getPrice());
-            postById.setDeviceNum(post.getDeviceNum());
             postById.setNorms(post.getNorms());
             postById.setDeviceType(post.getDeviceType());
             postById.setImportPeople(post.getImportPeople());
             post = postService.update(postById);
-
-
         } catch (Exception e) {
-
+            post.setSlug(post.getSlug() + post.getDeviceNum());
             post.setStatus(PostStatus.PUBLISHED);
             postService.createBy(post, postParam.getTagIds(), postParam.getCategoryIds(),
-                    postParam.getPostMetas(), false);
+                postParam.getPostMetas(), false);
             post = postService.getBySlug(post.getSlug());
-
-        }finally {
+        } finally {
             Stock stock = new Stock();
             stock.postConvert(post);
             stock.setCategories(postParam.getCategoryCreate());
             stockService.create(stock);
         }
-
-        return "1";
-
-
+        if (post != null) {
+            return "1";
+        }
+        return "0";
     }
+
+    @PostMapping("inStockAll")
+    @ApiOperation("import stock")
+    public String inStock(@Valid @RequestBody List<PostParam> postParamList) {
+
+        Set<Integer> Ids = new HashSet<>();
+        Post postById = new Post();
+        for (PostParam item : postParamList) {
+            Ids.clear();
+            Category category = new Category();
+            try {
+                System.out.println(item.getCategorySlug());
+                category.setSlug(item.getCategorySlug());
+                category.setName(item.getCategoryCreate());
+                category = categoryService.create(category);
+            } catch (Exception e) {
+                category = categoryService.getBySlug(item.getCategorySlug());
+                System.out.println(category);
+                System.out.println(e.getMessage().toString());
+            }
+            Ids.add(category.getId());
+            item.setThumbnail("/themes/device.jpeg");
+            item.setCategoryIds(Ids);
+            Post post = item.convertTo();
+            try {
+                postById = postService.getBySlug(post.getSlug() + "-" + post.getDeviceNum());
+                postById.setStock(post.getStock()==null?0:post.getStock() + postById.getStock());
+                postById.setPrice(post.getPrice()==null?0:post.getPrice());
+                postById.setNorms(post.getNorms()==null?"":post.getNorms());
+                postById.setDeviceType(post.getDeviceType()==null?"个":post.getDeviceType());
+                postById.setImportPeople(post.getImportPeople());
+                post = postService.update(postById);
+            } catch (Exception e) {
+                post.setSlug(post.getSlug() + "-" + post.getDeviceNum());
+                post.setStatus(PostStatus.PUBLISHED);
+                postService.createBy(post, item.getTagIds(), item.getCategoryIds(),
+                        item.getPostMetas(), false);
+                post = postService.getBySlug(post.getSlug());
+            } finally {
+                Stock stock = new Stock();
+                stock.postConvert(post);
+                stock.setCategories(item.getCategoryCreate());
+                stockService.create(stock);
+            }
+        }
+        return "1";
+    }
+
+
 }
