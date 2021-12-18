@@ -60,6 +60,7 @@ public class ContentIndexController {
 
 
     private final AdminServiceImpl adminService;
+
     private final HttpServletRequest httpServletRequest;
 
     private final OrderServiceImpl orderService;
@@ -189,6 +190,7 @@ public class ContentIndexController {
             Compete compete = new Compete();
             compete.setLink(link);
             compete.setNorm(norm);
+            compete.setUserId(user.getId());
             compete.setNumber(number);
             compete.setTitle(title);
             try {
@@ -287,6 +289,7 @@ public class ContentIndexController {
                     order.setDevice(post.getTitle());
                     order.setAmount(amount);
                     order.setState(0);
+                    order.setNorm(post.getNorms());
                     order.setStudent_num(user.getStudent_num());
                     order.setUsername(user.getNickname());
                     order.setClass_name(user.getClass_name());
@@ -301,8 +304,6 @@ public class ContentIndexController {
         } else {
             return "请先登录";
         }
-
-
         return "申请失败";
     }
 }

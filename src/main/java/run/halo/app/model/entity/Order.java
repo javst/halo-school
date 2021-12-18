@@ -53,6 +53,12 @@ public class Order extends BaseEntity {
     @Column(name = "amount")
     private Integer amount;
 
+    @Column(name = "norm")
+    private String norm;
+
+    @Column(name = "advice")
+    private String advice;
+
 
     @Override
     protected void prePersist() {

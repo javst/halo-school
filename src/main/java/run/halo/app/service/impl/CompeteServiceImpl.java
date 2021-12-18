@@ -43,4 +43,24 @@ public class CompeteServiceImpl extends AbstractCrudService<Compete, Integer> im
     public List<Compete> findByUsernameAndCreateTime(String username, String createTime) {
         return competeRepository.findByCreateTimeAndUsername(createTime, username);
     }
+
+    public List<Compete> findBuyUserId(Integer userId){
+        return competeRepository.findByUserId(userId);
+    }
+
+    public Integer passOrder(Integer id, Integer state) {
+        final Object i = competeRepository.passApply(id, state);
+        if ((Integer) i > 0) {
+            return 1;
+        }
+        return 0;
+    }
+
+    public Integer refuseApply(Integer id, Integer state, String advice) {
+        final Object o = competeRepository.refuseApply(id, state, advice);
+        if ((Integer) o > 0) {
+            return 1;
+        }
+        return 0;
+    }
 }

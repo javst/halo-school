@@ -3,6 +3,7 @@ package run.halo.app.model.entity;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import org.hibernate.annotations.ColumnDefault;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -33,4 +34,14 @@ public class Compete extends BaseEntity{
 
     @Column(name = "username")
     private String username;
+
+    @Column(name = "advice")
+    private String advice;
+
+    @Column(name = "user_id")
+    private Integer userId;
+
+    @Column(name = "state")
+    @ColumnDefault("0")
+    private Integer state;
 }

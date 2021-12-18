@@ -85,4 +85,11 @@ public class OrderServiceImpl extends AbstractCrudService<Order, Integer> implem
     }
 
 
+    public Integer refuseApply(Integer id, Integer state, String advice) {
+        final Object o = orderRepository.refuseApply(id, state, advice);
+        if ((Integer) o > 0) {
+            return 1;
+        }
+        return 0;
+    }
 }

@@ -4,6 +4,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import javax.servlet.http.HttpServletRequest;
+import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Controller;
@@ -11,10 +12,14 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
+import org.springframework.web.multipart.MultipartFile;
 import run.halo.app.cache.lock.CacheLock;
 import run.halo.app.controller.content.model.CategoryModel;
 import run.halo.app.controller.content.model.JournalModel;
@@ -23,8 +28,10 @@ import run.halo.app.controller.content.model.PhotoModel;
 import run.halo.app.controller.content.model.PostModel;
 import run.halo.app.controller.content.model.SheetModel;
 import run.halo.app.controller.content.model.TagModel;
+import run.halo.app.controller.content.model.UserModel;
 import run.halo.app.exception.NotFoundException;
 import run.halo.app.exception.UnsupportedException;
+import run.halo.app.model.dto.AttachmentDTO;
 import run.halo.app.model.dto.CategoryDTO;
 import run.halo.app.model.dto.post.BasePostMinimalDTO;
 import run.halo.app.model.entity.Post;
@@ -33,6 +40,7 @@ import run.halo.app.model.enums.EncryptTypeEnum;
 import run.halo.app.model.enums.PostPermalinkType;
 import run.halo.app.model.enums.PostStatus;
 import run.halo.app.model.enums.SheetPermalinkType;
+import run.halo.app.service.AttachmentService;
 import run.halo.app.service.AuthenticationService;
 import run.halo.app.service.CategoryService;
 import run.halo.app.service.OptionService;
@@ -72,6 +80,10 @@ public class ContentContentController {
 
     private final CategoryService categoryService;
 
+    private final UserModel userModel;
+
+    private final AttachmentService attachmentService;
+
     public ContentContentController(PostModel postModel,
         SheetModel sheetModel,
         CategoryModel categoryModel,
@@ -83,7 +95,9 @@ public class ContentContentController {
         PostService postService,
         SheetService sheetService,
         AuthenticationService authenticationService,
-        CategoryService categoryService) {
+        UserModel userModel,
+        CategoryService categoryService,
+        AttachmentService attachmentService) {
         this.postModel = postModel;
         this.sheetModel = sheetModel;
         this.categoryModel = categoryModel;
@@ -96,6 +110,8 @@ public class ContentContentController {
         this.sheetService = sheetService;
         this.authenticationService = authenticationService;
         this.categoryService = categoryService;
+        this.userModel = userModel;
+        this.attachmentService = attachmentService;
     }
 
     @GetMapping("{prefix}")
@@ -301,5 +317,45 @@ public class ContentContentController {
         redirectUrl.append(category.getFullPath());
 
         return redirectUrl.toString();
+    }
+
+    @GetMapping("user/{action}")
+    @ApiOperation("user center")
+    public String toUserCenter(@PathVariable("action") String action, Model model) {
+
+        return userModel.initUserPage(action, model);
+
+    }
+
+    @PostMapping("userInformation/updateUser")
+    @ApiOperation("Uploads single file")
+    public String updateUser(
+        @RequestParam("nickname") String nickname,
+        @RequestParam("student_num") String student_num,
+        @RequestParam("department") String department,
+        @RequestParam("class_name") String class_name,
+        @RequestParam("phoneNumber") String phoneNumber,
+        Model model
+        ) {
+        // AttachmentDTO attachmentDTO =
+        //     attachmentService.convertToDto(attachmentService.upload(avatar));
+        // System.out.println(attachmentDTO);
+        return userModel.updateUser(nickname,student_num,department,class_name,phoneNumber);
+    }
+    @PostMapping("userInformation/updateUserAvatar")
+    @ApiOperation("Uploads single file")
+    public String updateUserAvatar(@RequestPart("avatar") MultipartFile avatar){
+        AttachmentDTO attachmentDTO =
+            attachmentService.convertToDto(attachmentService.upload(avatar));
+        System.out.println(attachmentDTO);
+        return userModel.updateUserAvatar(attachmentDTO);
+
+    }
+
+    @PostMapping("updateOrder")
+    @ResponseBody
+    public String updateOrder(@RequestParam("orderId") Integer orderId,@RequestParam("amount") Integer amount){
+        return  userModel.updateOrder(orderId,amount);
+
     }
 }

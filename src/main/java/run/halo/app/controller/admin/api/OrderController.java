@@ -44,6 +44,16 @@ public class OrderController {
         return i.toString();
     }
 
+
+    @PostMapping("refuseOrder")
+    @ApiOperation("pass order")
+    public String refuseApply(@RequestParam("id") Integer id,
+        @RequestParam("state") Integer state,
+        @RequestParam("advice") String advice) {
+        Integer i = orderService.refuseApply(id, state,advice);
+        return i.toString();
+    }
+
     @PostMapping("countOrder")
     @ApiOperation("count order")
     public int countOrder() {

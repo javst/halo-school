@@ -58,4 +58,20 @@ public class CompeteController {
         }
         return null;
     }
+
+    @PostMapping("passApply")
+    @ApiOperation("pass order")
+    public String passApply(@RequestParam("id") Integer id, @RequestParam("state") Integer state) {
+        Integer i = competeService.passOrder(id, state);
+        return i.toString();
+    }
+
+    @PostMapping("refuseApply")
+    @ApiOperation("pass order")
+    public String refuseApply(@RequestParam("id") Integer id,
+        @RequestParam("state") Integer state,
+        @RequestParam("advice") String advice) {
+        Integer i = competeService.refuseApply(id, state,advice);
+        return i.toString();
+    }
 }

@@ -36,7 +36,7 @@ public interface OrderRepository extends BaseRepository<Order, Integer> {
     @Query(value = "select  * from orders where state = :state", nativeQuery = true)
     public List<Order> findByState(@Param("state") int state);
 
-    @Query(value = "select  * from orders where username = :username", nativeQuery = true)
+    @Query(value = "select  * from orders where username = :username order by id desc ", nativeQuery = true)
     public List<Order> findByUsername(@Param("username") String username);
 
     @Query(value = "select  * from orders where create_time >= :createTime", nativeQuery = true)
@@ -63,4 +63,8 @@ public interface OrderRepository extends BaseRepository<Order, Integer> {
         @Param("username") String username, @Param("state") int state);
 
 
+    @Transactional
+    @Modifying(clearAutomatically = true)
+    @Query(value = "update orders set state = :state ,advice = :advice where id = :id", nativeQuery = true)
+    Object refuseApply(Integer id, Integer state, String advice);
 }

@@ -30,7 +30,7 @@ spring:
     username: root
     password: 654487508
     hikari:
-      maximum-pool-size: 50
+      maximum-pool-size: 20
       idle-timeout: 0
       pool-name: myPool
   jpa:

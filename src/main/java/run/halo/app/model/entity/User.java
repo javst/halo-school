@@ -117,6 +117,10 @@ public class User extends BaseEntity {
     @ColumnDefault("0")
     private Integer rule;
 
+    @Column(name = "phone_number")
+    @ColumnDefault("0")
+    private String phoneNumber;
+
 
     @Override
     public void prePersist() {
