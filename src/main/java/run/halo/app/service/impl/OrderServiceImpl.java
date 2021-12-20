@@ -92,4 +92,8 @@ public class OrderServiceImpl extends AbstractCrudService<Order, Integer> implem
         }
         return 0;
     }
+
+    public List<Order> findByUserId(Integer id) {
+        return orderRepository.findByUserId(id);
+    }
 }

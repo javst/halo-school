@@ -67,4 +67,7 @@ public interface OrderRepository extends BaseRepository<Order, Integer> {
     @Modifying(clearAutomatically = true)
     @Query(value = "update orders set state = :state ,advice = :advice where id = :id", nativeQuery = true)
     Object refuseApply(Integer id, Integer state, String advice);
+
+    @Query(value = "select  * from orders where user_id = :id order by id desc ", nativeQuery = true)
+    List<Order> findByUserId(Integer id);
 }

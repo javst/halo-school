@@ -336,15 +336,16 @@ public class ContentContentController {
         @RequestParam("class_name") String class_name,
         @RequestParam("phoneNumber") String phoneNumber,
         Model model
-        ) {
+    ) {
         // AttachmentDTO attachmentDTO =
         //     attachmentService.convertToDto(attachmentService.upload(avatar));
         // System.out.println(attachmentDTO);
-        return userModel.updateUser(nickname,student_num,department,class_name,phoneNumber);
+        return userModel.updateUser(nickname, student_num, department, class_name, phoneNumber);
     }
+
     @PostMapping("userInformation/updateUserAvatar")
     @ApiOperation("Uploads single file")
-    public String updateUserAvatar(@RequestPart("avatar") MultipartFile avatar){
+    public String updateUserAvatar(@RequestPart("avatar") MultipartFile avatar) {
         AttachmentDTO attachmentDTO =
             attachmentService.convertToDto(attachmentService.upload(avatar));
         System.out.println(attachmentDTO);
@@ -354,8 +355,31 @@ public class ContentContentController {
 
     @PostMapping("updateOrder")
     @ResponseBody
-    public String updateOrder(@RequestParam("orderId") Integer orderId,@RequestParam("amount") Integer amount){
-        return  userModel.updateOrder(orderId,amount);
+    public String updateOrder(@RequestParam("orderId") Integer orderId,
+        @RequestParam("amount") Integer amount) {
+        return userModel.updateOrder(orderId, amount);
 
     }
+
+    @PostMapping("deleteOrder")
+    @ResponseBody
+    public String deleteOrder(@RequestParam("orderId") Integer orderId) {
+        return userModel.deleteOrder(orderId);
+
+    }
+
+    @PostMapping("applyHero")
+    @ApiOperation("Uploads single file")
+    public String applyHero(
+        @RequestPart("image") MultipartFile image,
+        @RequestParam("title") String title,
+        @RequestParam("money") Float money
+        ) {
+        AttachmentDTO attachmentDTO =
+            attachmentService.convertToDto(attachmentService.upload(image));
+        System.out.println(attachmentDTO);
+        return userModel.applyHero(attachmentDTO,title,money);
+
+    }
+
 }
